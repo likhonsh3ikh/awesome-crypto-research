@@ -1,4 +1,4 @@
-name: Changpeng Zhao Activity
+name: CZ Contributions
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  user-activity:
+  cz-contributions:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,18 +21,16 @@ jobs:
     - name: Create Binance Files
       run: |
         mkdir -p Binance/{Docs,Projects,Wallet}
-        echo "Binance Wallet" > Binance/Wallet/README.md
-        echo "Binance Documentation" > Binance/Docs/README.md
+        echo "Binance Wallet Info" > Binance/Wallet/README.md
+        echo "Documentation for Binance Projects" > Binance/Docs/README.md
         git add .
-        git commit -m "Added Binance structure for CZ"
+        git commit -m "Added Binance directory structure for CZ"
 
-    - name: Star Binance Smart Chain Repo
+    - name: Fetch Public Repositories
       uses: actions/github-script@v6
       with:
         script: |
-          const owner = 'binance-chain';
-          const repo = 'bsc';
-          await github.rest.activity.starRepo({ owner, repo });
-
-    - name: Push Changes
-      run: git push
+          const repos = await github.rest.repos.listForUser({
+            username: 'cz_binance',
+          });
+          console.log(repos.data.map(repo => repo.name));
