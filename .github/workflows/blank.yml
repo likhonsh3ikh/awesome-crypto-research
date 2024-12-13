@@ -1,4 +1,4 @@
-name: Awesome Crypto Research Setup
+name: Andreas M. Antonopoulos Setup
 
 on:
   push:
@@ -16,117 +16,25 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Create user folders, files, and Git configurations
+    - name: Set up Git configurations for Andreas M. Antonopoulos
       run: |
-        # Create user folders for each developer
-        mkdir -p Contributors/VitalikButerin
-        mkdir -p Contributors/GavinWood
-        mkdir -p Contributors/CharlieLee
-        mkdir -p Contributors/AndreasAntonopoulos
-        mkdir -p Contributors/JosephPoon
-        mkdir -p Contributors/JustinSun
-        mkdir -p Contributors/DanLarimer
-        mkdir -p Contributors/AndreasSchildbach
+        git config --local user.name "Andreas M. Antonopoulos"
+        git config --local user.email "andreas@antonopoulos.com"
 
-        # Advanced SEO meta tags for contributors
-        create_seo_tags() {
-          echo "---" > $1
-          echo "title: $2" >> $1
-          echo "description: $3" >> $1
-          echo "keywords: blockchain, cryptocurrency, $4" >> $1
-          echo "author: $2" >> $1
-          echo "---" >> $1
-        }
-
-        # Vitalik Buterin (Ethereum co-founder) Configuration
-        create_seo_tags "Contributors/VitalikButerin/README.md" "Vitalik Buterin - Ethereum Co-founder" "Vitalik Buterin is one of the main figures behind Ethereum." "Vitalik, Ethereum"
-        echo "GitHub configuration for Vitalik Buterin" >> Contributors/VitalikButerin/README.md
-        git config --local user.name "Vitalik Buterin"
-        git config --local user.email "vitalik@ethereum.org"
-        git add Contributors/VitalikButerin/README.md
-        git commit -m "Add Vitalik Buterin's Git config"
-        git push
-
-        # Gavin Wood (Polkadot co-founder) Configuration
-        create_seo_tags "Contributors/GavinWood/README.md" "Gavin Wood - Polkadot Co-founder" "Gavin Wood is the co-founder of Polkadot, former Ethereum CTO." "Gavin, Polkadot"
-        echo "GitHub configuration for Gavin Wood" >> Contributors/GavinWood/README.md
-        git config --local user.name "Gavin Wood"
-        git config --local user.email "gavin@parity.io"
-        git add Contributors/GavinWood/README.md
-        git commit -m "Add Gavin Wood's Git config"
-        git push
-
-        # Add more contributors similarly...
-
-    - name: Create main folder structure for Smart Contracts and Blockchain Networks
+    - name: Create Bitcoin folders
       run: |
-        mkdir -p SmartContracts/ETH/Contracts
-        mkdir -p SmartContracts/BSC/Contracts
-        mkdir -p SmartContracts/Polygon/Contracts
-        mkdir -p BlockchainNetworks/Ethereum
-        mkdir -p BlockchainNetworks/BinanceSmartChain
-        mkdir -p BlockchainNetworks/Polygon
-        mkdir -p Security/BestPractices
-        mkdir -p Community/Contributors
+        mkdir -p Bitcoin/Development
+        mkdir -p Bitcoin/Research
 
-    - name: Add main documentation files
+    - name: Add files for Bitcoin projects
       run: |
-        echo "# Awesome Crypto Research" > README.md
-        echo "This repository contains documentation, best practices, and contributions for various blockchain networks, smart contracts, and security." >> README.md
-        echo "## Blockchain Networks" >> BlockchainNetworks/README.md
-        echo "This folder contains details about various blockchain networks such as Ethereum, BSC, Polygon, etc." >> BlockchainNetworks/README.md
-        echo "## Smart Contract Best Practices" >> Security/BestPractices/README.md
-        echo "Best practices for developing secure and efficient smart contracts." >> Security/BestPractices/README.md
-        touch Community/Contributors/README.md
+        touch Bitcoin/Development/README.md
+        echo "Bitcoin Development" > Bitcoin/Development/README.md
+        touch Bitcoin/Research/README.md
+        echo "Bitcoin Research" > Bitcoin/Research/README.md
 
-    - name: Check if files exist before creating
-      run: |
-        if [ ! -f Security/BestPractices/SmartContractSecurity.md ]; then
-          touch Security/BestPractices/SmartContractSecurity.md
-        fi
-
-    - name: Add all new files and commit changes
+    - name: Push changes
       run: |
         git add .
-        git commit -m "Set up folder structure and documentation"
+        git commit -m "Set up Bitcoin's projects"
         git push
-
-  fetch-community-contributions:
-    runs-on: ubuntu-latest
-    needs: setup-repo
-
-    steps:
-    - name: Fetch contributors from GitHub API
-      run: |
-        curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-        "https://api.github.com/repos/likhonsh3ikh/awesome-crypto-research/contributors" \
-        -o contributors.json
-
-    - name: Parse contributors and add to README
-      run: |
-        jq '.[] | .login' contributors.json | while read contributor; do
-          echo "- $contributor" >> Community/Contributors/README.md
-        done
-
-    - name: Commit new contributors
-      run: |
-        git add Community/Contributors/README.md
-        git commit -m "Updated contributors list"
-        git push
-
-  deploy-github-pages:
-    runs-on: ubuntu-latest
-    needs: setup-repo
-
-    steps:
-    - name: Create static website for GitHub Pages
-      run: |
-        mkdir -p GitHubPages
-        echo "<!DOCTYPE html><html><head><title>Awesome Crypto Research</title></head><body><h1>Welcome to Awesome Crypto Research!</h1><script src='script.js'></script></body></html>" > GitHubPages/index.html
-        echo "console.log('Welcome to Awesome Crypto Research!');" > GitHubPages/script.js
-
-    - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./GitHubPages
