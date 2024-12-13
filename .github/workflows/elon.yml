@@ -1,4 +1,4 @@
-name: Justin Sun Activity
+name: Changpeng Zhao Activity
 
 on:
   push:
@@ -15,23 +15,24 @@ jobs:
 
     - name: Configure Git User
       run: |
-        git config --local user.name "Justin Sun"
-        git config --local user.email "justin@tron.network"
+        git config --local user.name "Changpeng Zhao"
+        git config --local user.email "cz@binance.com"
 
-    - name: Create TRON Files
+    - name: Create Binance Files
       run: |
-        mkdir -p Justin/TRON/{Protocol,Docs}
-        echo "TRON Protocol Work" > Justin/TRON/Protocol/README.md
+        mkdir -p Binance/{Docs,Projects,Wallet}
+        echo "Binance Wallet" > Binance/Wallet/README.md
+        echo "Binance Documentation" > Binance/Docs/README.md
         git add .
-        git commit -m "Justin Sun: Created TRON files"
+        git commit -m "Added Binance structure for CZ"
 
-    - name: Star TRON Repo
+    - name: Star Binance Smart Chain Repo
       uses: actions/github-script@v6
       with:
         script: |
           github.rest.activity.starRepo({
-            owner: 'tronprotocol',
-            repo: 'java-tron'
+            owner: 'binance-chain',
+            repo: 'bsc'
           });
 
     - name: Push Changes
