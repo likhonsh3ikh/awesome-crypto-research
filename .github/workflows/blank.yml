@@ -16,7 +16,22 @@ jobs:
       - name: Create Folder Structure
         run: |
           # Create Folder Structure for Different Blockchain Networks
-          mkdir -p Ethereum/SmartContracts Ethereum/Tools BinanceSmartChain/SmartContracts BinanceSmartChain/Tools Security/Audits Security/Exploits Resources/APIs Resources/Tools Resources/Whitepapers GitHubPages/assets
+          mkdir -p Ethereum/SmartContracts/ERC20
+          mkdir -p Ethereum/SmartContracts/ERC721
+          mkdir -p Ethereum/SmartContracts/DeFiExamples
+          mkdir -p Ethereum/Tools/Hardhat
+          mkdir -p Ethereum/Tools/Remix
+          mkdir -p Ethereum/Tools/Truffle
+          mkdir -p BinanceSmartChain/SmartContracts/PancakeSwap
+          mkdir -p BinanceSmartChain/SmartContracts/BSCDeFi
+          mkdir -p Security/Exploits/FlashLoan
+          mkdir -p Security/Exploits/FrontRunning
+          mkdir -p Security/Exploits/Reentrancy
+          mkdir -p Security/BestPractices
+          mkdir -p Resources/APIs/Etherscan
+          mkdir -p Resources/Tools/BlockchainTools
+          mkdir -p Resources/Whitepapers/BitcoinWhitepaper
+          mkdir -p GitHubPages/assets
 
       - name: Add Documentation Files
         run: |
@@ -26,30 +41,30 @@ jobs:
           echo "MIT License" > LICENSE
 
           # Ethereum Smart Contracts Content (with only placeholder text)
-          echo "# ERC20 Standard\nDetails and examples of the ERC20 token standard." > Ethereum/SmartContracts/ERC20.md
-          echo "# ERC721 Standard\nNFT Contract examples and theory." > Ethereum/SmartContracts/ERC721.md
-          echo "# DeFi Example - Uniswap\nUniswap case study." > Ethereum/SmartContracts/DeFiExamples.md
+          echo "# ERC20 Standard\nDetails and examples of the ERC20 token standard." > Ethereum/SmartContracts/ERC20/README.md
+          echo "# ERC721 Standard\nNFT Contract examples and theory." > Ethereum/SmartContracts/ERC721/README.md
+          echo "# DeFi Example - Uniswap\nUniswap case study." > Ethereum/SmartContracts/DeFiExamples/README.md
           echo "# Best Security Practices\nOverview of smart contract security." > Ethereum/SmartContracts/SecurityBestPractices.md
 
           # Ethereum Tools Content (with only placeholder text)
-          echo "# Hardhat\nA complete guide to using Hardhat for Ethereum development." > Ethereum/Tools/Hardhat.md
-          echo "# Remix IDE\nHow to use Remix for smart contract development." > Ethereum/Tools/Remix.md
-          echo "# Truffle Framework\nA guide to using Truffle for blockchain development." > Ethereum/Tools/Truffle.md
+          echo "# Hardhat\nA complete guide to using Hardhat for Ethereum development." > Ethereum/Tools/Hardhat/README.md
+          echo "# Remix IDE\nHow to use Remix for smart contract development." > Ethereum/Tools/Remix/README.md
+          echo "# Truffle Framework\nA guide to using Truffle for blockchain development." > Ethereum/Tools/Truffle/README.md
 
           # Binance Smart Chain Smart Contracts (with placeholder text)
-          echo "# PancakeSwap Example\nPancakeSwap contract study." > BinanceSmartChain/SmartContracts/PancakeSwapExamples.md
-          echo "# BSC DeFi Examples\nDeFi contract examples on Binance Smart Chain." > BinanceSmartChain/SmartContracts/BSCDeFi.md
+          echo "# PancakeSwap Example\nPancakeSwap contract study." > BinanceSmartChain/SmartContracts/PancakeSwap/README.md
+          echo "# BSC DeFi Examples\nDeFi contract examples on Binance Smart Chain." > BinanceSmartChain/SmartContracts/BSCDeFi/README.md
 
           # Security Audits and Exploits (with placeholder text)
-          echo "# Flash Loan Exploits\nDetails on flash loan attack vectors." > Security/Exploits/FlashLoan.md
-          echo "# Front Running\nExplanation of front-running issues in smart contracts." > Security/Exploits/FrontRunning.md
-          echo "# Reentrancy Attacks\nHow reentrancy vulnerabilities work and how to avoid them." > Security/Exploits/Reentrancy.md
+          echo "# Flash Loan Exploits\nDetails on flash loan attack vectors." > Security/Exploits/FlashLoan/README.md
+          echo "# Front Running\nExplanation of front-running issues in smart contracts." > Security/Exploits/FrontRunning/README.md
+          echo "# Reentrancy Attacks\nHow reentrancy vulnerabilities work and how to avoid them." > Security/Exploits/Reentrancy/README.md
           echo "# Smart Contract Security\nBest practices for secure contract development." > Security/BestPractices/SmartContractSecurity.md
 
           # Resources: APIs, Tools, and Whitepapers (with placeholder text)
-          echo "# Etherscan API\nDocumentation for using Etherscan API." > Resources/APIs/Etherscan.md
-          echo "# Blockchain Tools\nCurated list of tools for blockchain research and development." > Resources/Tools/BlockchainTools.md
-          echo "# Bitcoin Whitepaper\nThe original Bitcoin whitepaper by Satoshi Nakamoto." > Resources/Whitepapers/BitcoinWhitepaper.md
+          echo "# Etherscan API\nDocumentation for using Etherscan API." > Resources/APIs/Etherscan/README.md
+          echo "# Blockchain Tools\nCurated list of tools for blockchain research and development." > Resources/Tools/BlockchainTools/README.md
+          echo "# Bitcoin Whitepaper\nThe original Bitcoin whitepaper by Satoshi Nakamoto." > Resources/Whitepapers/BitcoinWhitepaper/README.md
 
       - name: Commit Changes
         run: |
