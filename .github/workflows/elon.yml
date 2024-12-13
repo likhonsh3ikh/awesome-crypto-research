@@ -1,4 +1,4 @@
-name: CZ Contributions
+name: Justin Sun Workflow
 
 on:
   push:
@@ -6,31 +6,25 @@ on:
       - main
 
 jobs:
-  cz-contributions:
+  justin-task:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
+    - name: Checkout Code
       uses: actions/checkout@v3
 
-    - name: Configure Git User
+    - name: Set up Git Config
       run: |
-        git config --local user.name "Changpeng Zhao"
-        git config --local user.email "cz@binance.com"
+        git config --local user.name "Justin Sun"
+        git config --local user.email "justin@tron.network"
 
-    - name: Create Binance Files
+    - name: Create TRON Folder Structure
       run: |
-        mkdir -p Binance/{Docs,Projects,Wallet}
-        echo "Binance Wallet Info" > Binance/Wallet/README.md
-        echo "Documentation for Binance Projects" > Binance/Docs/README.md
+        mkdir -p Contributors/JustinSun/TRON
+        echo "Justin Sun's TRON Contributions" > Contributors/JustinSun/TRON/README.md
+
+    - name: Commit Changes
+      run: |
         git add .
-        git commit -m "Added Binance directory structure for CZ"
-
-    - name: Fetch Public Repositories
-      uses: actions/github-script@v6
-      with:
-        script: |
-          const repos = await github.rest.repos.listForUser({
-            username: 'cz_binance',
-          });
-          console.log(repos.data.map(repo => repo.name));
+        git commit -m "Add Justin Sun's contributions folder"
+        git push
