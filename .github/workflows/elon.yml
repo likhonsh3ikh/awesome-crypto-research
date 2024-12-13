@@ -1,43 +1,38 @@
-name: Vitalik Buterin Setup
+name: Justin Sun Activity
 
 on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
 
 jobs:
-  setup-repo:
+  user-activity:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
+    - name: Checkout Repository
       uses: actions/checkout@v3
 
-    - name: Set up Git configurations for Vitalik Buterin
+    - name: Configure Git User
       run: |
-        git config --local user.name "Vitalik Buterin"
-        git config --local user.email "vitalik@ethereum.org"
+        git config --local user.name "Justin Sun"
+        git config --local user.email "justin@tron.network"
 
-    - name: Create Ethereum folders
+    - name: Create TRON Files
       run: |
-        mkdir -p Ethereum/Development
-        mkdir -p Ethereum/Research
-        mkdir -p Ethereum/Protocol
-
-    - name: Add files for Ethereum projects
-      run: |
-        touch Ethereum/Development/README.md
-        echo "Ethereum Development" > Ethereum/Development/README.md
-        touch Ethereum/Research/README.md
-        echo "Ethereum Research" > Ethereum/Research/README.md
-        touch Ethereum/Protocol/README.md
-        echo "Ethereum Protocol" > Ethereum/Protocol/README.md
-
-    - name: Push changes
-      run: |
+        mkdir -p Justin/TRON/{Protocol,Docs}
+        echo "TRON Protocol Work" > Justin/TRON/Protocol/README.md
         git add .
-        git commit -m "Set up Ethereum's projects"
-        git push
+        git commit -m "Justin Sun: Created TRON files"
+
+    - name: Star TRON Repo
+      uses: actions/github-script@v6
+      with:
+        script: |
+          github.rest.activity.starRepo({
+            owner: 'tronprotocol',
+            repo: 'java-tron'
+          });
+
+    - name: Push Changes
+      run: git push
