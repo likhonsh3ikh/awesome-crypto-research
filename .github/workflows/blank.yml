@@ -13,11 +13,13 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Create Professional Folder Structure and Files
+      - name: Create Folder Structure
         run: |
           # Create Folder Structure for Different Blockchain Networks
           mkdir -p Ethereum/SmartContracts Ethereum/Tools BinanceSmartChain/SmartContracts BinanceSmartChain/Tools Security/Audits Security/Exploits Resources/APIs Resources/Tools Resources/Whitepapers GitHubPages/assets
 
+      - name: Add Documentation Files
+        run: |
           # Add Main Documentation Files
           echo "# Awesome Crypto Research Repository\nThis repository contains a comprehensive collection of blockchain and crypto research." > README.md
           echo "## Contributing\nPlease follow our guidelines to contribute." > CONTRIBUTING.md
@@ -51,7 +53,7 @@ jobs:
 
           # GitHub Pages for Static Web
           mkdir -p GitHubPages/assets
-          echo "Basic web structure for the crypto research site." > GitHubPages/index.html
+          echo "<!DOCTYPE html><html lang='en'><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width, initial-scale=1.0'><title>Awesome Crypto Research</title></head><body><h1>Welcome to Awesome Crypto Research!</h1><script src='./script.js'></script></body></html>" > GitHubPages/index.html
           echo "body { font-family: Arial, sans-serif; padding: 20px; }" > GitHubPages/style.css
           echo "console.log('Welcome to Awesome Crypto Research!');" > GitHubPages/script.js
 
