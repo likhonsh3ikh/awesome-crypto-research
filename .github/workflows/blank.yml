@@ -18,49 +18,45 @@ jobs:
 
     - name: Set up Git configurations
       run: |
+        # GitHub Actions Configuration
         git config --local user.name "GitHub Actions"
         git config --local user.email "actions@github.com"
+
+        # Likhon Sheikh's Configuration
         git config --local user.name "Likhon Sheikh"
         git config --local user.email "isaac.likhon@yahoo.com"
-        # GitHub Actions Configuration
-git config --local user.name "GitHub Actions"
-git config --local user.email "actions@github.com"
 
-# Likhon Sheikh's Configuration
-git config --local user.name "Likhon Sheikh"
-git config --local user.email "isaac.likhon@yahoo.com"
+        # Vitalik Buterin (Ethereum co-founder)
+        git config --local user.name "Vitalik Buterin"
+        git config --local user.email "vitalik@ethereum.org"
 
-# Vitalik Buterin (Ethereum co-founder)
-git config --local user.name "Vitalik Buterin"
-git config --local user.email "vitalik@ethereum.org"
+        # Gavin Wood (Polkadot co-founder)
+        git config --local user.name "Gavin Wood"
+        git config --local user.email "gavin@parity.io"
 
-# Gavin Wood (Polkadot co-founder)
-git config --local user.name "Gavin Wood"
-git config --local user.email "gavin@parity.io"
+        # Charlie Lee (Litecoin creator)
+        git config --local user.name "Charlie Lee"
+        git config --local user.email "charlie@litecoin.org"
 
-# Charlie Lee (Litecoin creator)
-git config --local user.name "Charlie Lee"
-git config --local user.email "charlie@litecoin.org"
+        # Andreas M. Antonopoulos (Bitcoin expert)
+        git config --local user.name "Andreas M. Antonopoulos"
+        git config --local user.email "andreas@antonopoulos.com"
 
-# Andreas M. Antonopoulos (Bitcoin expert)
-git config --local user.name "Andreas M. Antonopoulos"
-git config --local user.email "andreas@antonopoulos.com"
+        # Joseph Poon (Lightning Network co-author)
+        git config --local user.name "Joseph Poon"
+        git config --local user.email "joseph@lightning.network"
 
-# Joseph Poon (Lightning Network co-author)
-git config --local user.name "Joseph Poon"
-git config --local user.email "joseph@lightning.network"
+        # Justin Sun (TRON founder)
+        git config --local user.name "Justin Sun"
+        git config --local user.email "justin@tron.network"
 
-# Justin Sun (TRON founder)
-git config --local user.name "Justin Sun"
-git config --local user.email "justin@tron.network"
+        # Dan Larimer (EOS creator)
+        git config --local user.name "Dan Larimer"
+        git config --local user.email "dan@eos.io"
 
-# Dan Larimer (EOS creator)
-git config --local user.name "Dan Larimer"
-git config --local user.email "dan@eos.io"
-
-# Andreas Schildbach (Bitcoin Wallet Developer)
-git config --local user.name "Andreas Schildbach"
-git config --local user.email "andreas@bitcoinwallet.com"
+        # Andreas Schildbach (Bitcoin Wallet Developer)
+        git config --local user.name "Andreas Schildbach"
+        git config --local user.email "andreas@bitcoinwallet.com"
 
     - name: Create folder structure
       run: |
