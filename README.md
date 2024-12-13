@@ -1,2 +1,1 @@
-# awesome-crypto-research
-A comprehensive documentary repository for blockchain projects, smart contracts, proof of work concepts, and crypto technologies.
+# Awesome Crypto Research Repository\nThis repository contains a comprehensive collection of blockchain and crypto research.
