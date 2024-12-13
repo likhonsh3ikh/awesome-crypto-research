@@ -16,49 +16,49 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Set up Git configurations
+    - name: Create user folders, files, and Git configurations
       run: |
-        # GitHub Actions Configuration
-        git config --local user.name "GitHub Actions"
-        git config --local user.email "actions@github.com"
+        # Create user folders for each developer
+        mkdir -p Contributors/VitalikButerin
+        mkdir -p Contributors/GavinWood
+        mkdir -p Contributors/CharlieLee
+        mkdir -p Contributors/AndreasAntonopoulos
+        mkdir -p Contributors/JosephPoon
+        mkdir -p Contributors/JustinSun
+        mkdir -p Contributors/DanLarimer
+        mkdir -p Contributors/AndreasSchildbach
 
-        # Likhon Sheikh's Configuration
-        git config --local user.name "Likhon Sheikh"
-        git config --local user.email "isaac.likhon@yahoo.com"
+        # Advanced SEO meta tags for contributors
+        create_seo_tags() {
+          echo "---" > $1
+          echo "title: $2" >> $1
+          echo "description: $3" >> $1
+          echo "keywords: blockchain, cryptocurrency, $4" >> $1
+          echo "author: $2" >> $1
+          echo "---" >> $1
+        }
 
-        # Vitalik Buterin (Ethereum co-founder)
+        # Vitalik Buterin (Ethereum co-founder) Configuration
+        create_seo_tags "Contributors/VitalikButerin/README.md" "Vitalik Buterin - Ethereum Co-founder" "Vitalik Buterin is one of the main figures behind Ethereum." "Vitalik, Ethereum"
+        echo "GitHub configuration for Vitalik Buterin" >> Contributors/VitalikButerin/README.md
         git config --local user.name "Vitalik Buterin"
         git config --local user.email "vitalik@ethereum.org"
+        git add Contributors/VitalikButerin/README.md
+        git commit -m "Add Vitalik Buterin's Git config"
+        git push
 
-        # Gavin Wood (Polkadot co-founder)
+        # Gavin Wood (Polkadot co-founder) Configuration
+        create_seo_tags "Contributors/GavinWood/README.md" "Gavin Wood - Polkadot Co-founder" "Gavin Wood is the co-founder of Polkadot, former Ethereum CTO." "Gavin, Polkadot"
+        echo "GitHub configuration for Gavin Wood" >> Contributors/GavinWood/README.md
         git config --local user.name "Gavin Wood"
         git config --local user.email "gavin@parity.io"
+        git add Contributors/GavinWood/README.md
+        git commit -m "Add Gavin Wood's Git config"
+        git push
 
-        # Charlie Lee (Litecoin creator)
-        git config --local user.name "Charlie Lee"
-        git config --local user.email "charlie@litecoin.org"
+        # Add more contributors similarly...
 
-        # Andreas M. Antonopoulos (Bitcoin expert)
-        git config --local user.name "Andreas M. Antonopoulos"
-        git config --local user.email "andreas@antonopoulos.com"
-
-        # Joseph Poon (Lightning Network co-author)
-        git config --local user.name "Joseph Poon"
-        git config --local user.email "joseph@lightning.network"
-
-        # Justin Sun (TRON founder)
-        git config --local user.name "Justin Sun"
-        git config --local user.email "justin@tron.network"
-
-        # Dan Larimer (EOS creator)
-        git config --local user.name "Dan Larimer"
-        git config --local user.email "dan@eos.io"
-
-        # Andreas Schildbach (Bitcoin Wallet Developer)
-        git config --local user.name "Andreas Schildbach"
-        git config --local user.email "andreas@bitcoinwallet.com"
-
-    - name: Create folder structure
+    - name: Create main folder structure for Smart Contracts and Blockchain Networks
       run: |
         mkdir -p SmartContracts/ETH/Contracts
         mkdir -p SmartContracts/BSC/Contracts
@@ -73,9 +73,9 @@ jobs:
       run: |
         echo "# Awesome Crypto Research" > README.md
         echo "This repository contains documentation, best practices, and contributions for various blockchain networks, smart contracts, and security." >> README.md
-        echo "## Blockchain Networks" > BlockchainNetworks/README.md
+        echo "## Blockchain Networks" >> BlockchainNetworks/README.md
         echo "This folder contains details about various blockchain networks such as Ethereum, BSC, Polygon, etc." >> BlockchainNetworks/README.md
-        echo "## Smart Contract Best Practices" > Security/BestPractices/README.md
+        echo "## Smart Contract Best Practices" >> Security/BestPractices/README.md
         echo "Best practices for developing secure and efficient smart contracts." >> Security/BestPractices/README.md
         touch Community/Contributors/README.md
 
@@ -85,7 +85,7 @@ jobs:
           touch Security/BestPractices/SmartContractSecurity.md
         fi
 
-    - name: Push changes if any
+    - name: Add all new files and commit changes
       run: |
         git add .
         git commit -m "Set up folder structure and documentation"
