@@ -1,4 +1,4 @@
-name: Elon Musk Setup
+name: Vitalik Buterin Setup
 
 on:
   push:
@@ -9,33 +9,35 @@ on:
       - main
 
 jobs:
-  setup-elon:
+  setup-repo:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Create Elon Musk related folders and files
+    - name: Set up Git configurations for Vitalik Buterin
       run: |
-        mkdir -p "ElonMusk/Twitter"
-        mkdir -p "ElonMusk/Tesla"
-        mkdir -p "ElonMusk/SpaceX"
-        mkdir -p "ElonMusk/Neuralink"
+        git config --local user.name "Vitalik Buterin"
+        git config --local user.email "vitalik@ethereum.org"
 
-        echo "# Twitter Data" > "ElonMusk/Twitter/twitter_data.md"
-        echo "Data and insights related to Twitter." >> "ElonMusk/Twitter/twitter_data.md"
-        echo "# Tesla Projects" > "ElonMusk/Tesla/tesla_projects.md"
-        echo "Projects and innovations by Tesla." >> "ElonMusk/Tesla/tesla_projects.md"
-        echo "# SpaceX Projects" > "ElonMusk/SpaceX/spacex_projects.md"
-        echo "Exploring the missions and innovations of SpaceX." >> "ElonMusk/SpaceX/spacex_projects.md"
-        echo "# Neuralink Innovations" > "ElonMusk/Neuralink/neuralink_innovations.md"
-        echo "Technological advancements in Neuralink." >> "ElonMusk/Neuralink/neuralink_innovations.md"
-
-    - name: Commit and push Elon Musk's changes
+    - name: Create Ethereum folders
       run: |
-        git config --local user.name "Elon Musk"
-        git config --local user.email "elonmusk@tesla.com"
+        mkdir -p Ethereum/Development
+        mkdir -p Ethereum/Research
+        mkdir -p Ethereum/Protocol
+
+    - name: Add files for Ethereum projects
+      run: |
+        touch Ethereum/Development/README.md
+        echo "Ethereum Development" > Ethereum/Development/README.md
+        touch Ethereum/Research/README.md
+        echo "Ethereum Research" > Ethereum/Research/README.md
+        touch Ethereum/Protocol/README.md
+        echo "Ethereum Protocol" > Ethereum/Protocol/README.md
+
+    - name: Push changes
+      run: |
         git add .
-        git commit -m "Added folders and files for Elon Musk projects"
+        git commit -m "Set up Ethereum's projects"
         git push
