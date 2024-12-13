@@ -1,0 +1,67 @@
+name: Contributor Workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      username:
+        description: 'GitHub Username of Contributor'
+        required: true
+        type: string
+
+jobs:
+  contributor-setup:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Step 1: Checkout the repository
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    # Step 2: Check GitHub API Rate Limits
+    - name: Check GitHub API Rate Limit
+      id: rate_limit
+      run: |
+        curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/rate_limit
+        # If the rate limit is about to be exceeded, the workflow will stop here
+        # You can also parse the JSON response to raise an error if the limit is close
+        rate_limit=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/rate_limit | jq '.resources.core.remaining')
+        if [ "$rate_limit" -lt 10 ]; then
+          echo "Rate limit is low. Exiting."
+          exit 1
+        fi
+
+    # Step 3: Set up Git config
+    - name: Set up Git Config
+      run: |
+        git config --local user.name "GitHub Actions"
+        git config --local user.email "actions@github.com"
+
+    # Step 4: Create folders and content for the contributor
+    - name: Create Contributor Folder and Content
+      run: |
+        # Create folder structure for the contributor
+        mkdir -p Contributors/${{ github.event.inputs.username }}
+        
+        # Create static content for the contributor
+        echo "# About ${{ github.event.inputs.username }}" > Contributors/${{ github.event.inputs.username }}/ABOUT.md
+        echo "This folder contains content and contributions from ${{ github.event.inputs.username }}" >> Contributors/${{ github.event.inputs.username }}/ABOUT.md
+
+        # Create self.md with some details
+        echo "# ${{ github.event.inputs.username }}'s Personal Information" > Contributors/${{ github.event.inputs.username }}/self.md
+        echo "GitHub Username: ${{ github.event.inputs.username }}" >> Contributors/${{ github.event.inputs.username }}/self.md
+        echo "Email: (provide email)" >> Contributors/${{ github.event.inputs.username }}/self.md
+        echo "Twitter: @${{ github.event.inputs.username }}" >> Contributors/${{ github.event.inputs.username }}/self.md
+        echo "Patreon: (provide patreon link if available)" >> Contributors/${{ github.event.inputs.username }}/self.md
+
+    # Step 5: Create a new branch for the contributor and commit changes
+    - name: Commit and Push Changes
+      run: |
+        # Create a new branch for the contributor
+        git checkout -b contributor/${{ github.event.inputs.username }}
+        
+        # Stage and commit the changes
+        git add .
+        git commit -m "Add ${GITHUB_EVENT_INPUTS_USERNAME}'s folder and static content"
+        
+        # Push the changes to the repository
+        git push origin contributor/${{ github.event.inputs.username }}
