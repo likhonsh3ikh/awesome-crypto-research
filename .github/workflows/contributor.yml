@@ -17,26 +17,41 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v3
 
-    # Step 2: Check GitHub API Rate Limits
+    # Step 2: Get GitHub User Info
+    - name: Fetch User Info from GitHub API
+      id: fetch_user_info
+      run: |
+        # Fetch user info from GitHub API using the provided username
+        response=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          "https://api.github.com/users/${{ github.event.inputs.username }}")
+
+        # Extract the name and email from the response
+        USERNAME=$(echo "$response" | jq -r '.login')
+        NAME=$(echo "$response" | jq -r '.name')
+        EMAIL=$(echo "$response" | jq -r '.email')
+
+        # Set the user details as outputs
+        echo "USER_NAME=$NAME" >> $GITHUB_ENV
+        echo "USER_EMAIL=$EMAIL" >> $GITHUB_ENV
+        echo "USER_USERNAME=$USERNAME" >> $GITHUB_ENV
+
+    # Step 3: Check GitHub API Rate Limit
     - name: Check GitHub API Rate Limit
       id: rate_limit
       run: |
-        curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/rate_limit
-        # If the rate limit is about to be exceeded, the workflow will stop here
-        # You can also parse the JSON response to raise an error if the limit is close
         rate_limit=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/rate_limit | jq '.resources.core.remaining')
         if [ "$rate_limit" -lt 10 ]; then
           echo "Rate limit is low. Exiting."
           exit 1
         fi
 
-    # Step 3: Set up Git config
+    # Step 4: Set up Git Config with Fetched User Info
     - name: Set up Git Config
       run: |
-        git config --local user.name "GitHub Actions"
-        git config --local user.email "actions@github.com"
+        git config --local user.name "${{ env.USER_NAME }}"
+        git config --local user.email "${{ env.USER_EMAIL }}"
 
-    # Step 4: Create folders and content for the contributor
+    # Step 5: Create folders and content for the contributor
     - name: Create Contributor Folder and Content
       run: |
         # Create folder structure for the contributor
@@ -48,12 +63,12 @@ jobs:
 
         # Create self.md with some details
         echo "# ${{ github.event.inputs.username }}'s Personal Information" > Contributors/${{ github.event.inputs.username }}/self.md
-        echo "GitHub Username: ${{ github.event.inputs.username }}" >> Contributors/${{ github.event.inputs.username }}/self.md
-        echo "Email: (provide email)" >> Contributors/${{ github.event.inputs.username }}/self.md
+        echo "GitHub Username: ${{ env.USER_USERNAME }}" >> Contributors/${{ github.event.inputs.username }}/self.md
+        echo "Email: ${{ env.USER_EMAIL }}" >> Contributors/${{ github.event.inputs.username }}/self.md
         echo "Twitter: @${{ github.event.inputs.username }}" >> Contributors/${{ github.event.inputs.username }}/self.md
         echo "Patreon: (provide patreon link if available)" >> Contributors/${{ github.event.inputs.username }}/self.md
 
-    # Step 5: Create a new branch for the contributor and commit changes
+    # Step 6: Create a new branch for the contributor and commit changes
     - name: Commit and Push Changes
       run: |
         # Create a new branch for the contributor
@@ -61,7 +76,7 @@ jobs:
         
         # Stage and commit the changes
         git add .
-        git commit -m "Add ${GITHUB_EVENT_INPUTS_USERNAME}'s folder and static content"
+        git commit -m "Add ${{ github.event.inputs.username }}'s folder and static content"
         
         # Push the changes to the repository
         git push origin contributor/${{ github.event.inputs.username }}
