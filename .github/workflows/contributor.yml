@@ -7,6 +7,10 @@ on:
         description: 'Enter the GitHub username or GitHub profile URL'
         required: true
         type: string
+      email:
+        description: 'Enter your email (optional, will use default if missing)'
+        required: false
+        type: string
 
 jobs:
   collect-user-data:
@@ -21,7 +25,7 @@ jobs:
       run: |
         # Get the input username or URL
         INPUT="${{ github.event.inputs.username_or_url }}"
-
+        
         # Check if input is a URL or a username
         if [[ "$INPUT" =~ ^https:\/\/github\.com\/([a-zA-Z0-9_-]+) ]]; then
           # Extract username from URL
@@ -58,11 +62,28 @@ jobs:
         EMAIL=$(echo "$USER_DATA" | jq -r '.email')
         PUBLIC_REPOS=$(echo "$USER_DATA" | jq -r '.public_repos')
 
+        # If email is missing, prompt the user for their email or fallback to default GitHub Actions user
+        if [ -z "$EMAIL" ]; then
+          if [ -z "${{ github.event.inputs.email }}" ]; then
+            EMAIL="actions@github.com"  # Default email if not provided
+            echo "Using default email: $EMAIL"
+          else
+            EMAIL="${{ github.event.inputs.email }}"
+            echo "Using provided email: $EMAIL"
+          fi
+        fi
+
         # Set the extracted data as environment variables for use in other steps
         echo "name=$NAME" >> $GITHUB_ENV
         echo "bio=$BIO" >> $GITHUB_ENV
         echo "email=$EMAIL" >> $GITHUB_ENV
         echo "public_repos=$PUBLIC_REPOS" >> $GITHUB_ENV
+
+    - name: Set Up Git Configuration
+      run: |
+        # Set user name and email for Git
+        git config --local user.name "${{ env.name }}"
+        git config --local user.email "${{ env.email }}"
 
     - name: Create User Folder Structure
       run: |
