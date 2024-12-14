@@ -3,80 +3,92 @@ name: Add Static User Profile with Self-Task
 on:
   workflow_dispatch:
     inputs:
-      username:
-        description: 'Enter the username for data collection'
+      username_or_url:
+        description: 'Enter the GitHub username or GitHub profile URL'
         required: true
         type: string
 
 jobs:
   collect-user-data:
     runs-on: ubuntu-latest
-    timeout-minutes: 10 # To ensure the job does not run indefinitely
+    timeout-minutes: 10  # To ensure the job does not run indefinitely
 
     steps:
     - name: Checkout Code
       uses: actions/checkout@v3
 
-    - name: Validate Username Input
+    - name: Validate Input and Extract Username
       run: |
-        # Validate if username is non-empty and alphanumeric
-        if [[ -z "${{ github.event.inputs.username }}" || ! "${{ github.event.inputs.username }}" =~ ^[a-zA-Z0-9_-]+$ ]]; then
-          echo "Invalid username. Only alphanumeric characters, hyphens, and underscores are allowed."
+        # Get the input username or URL
+        INPUT="${{ github.event.inputs.username_or_url }}"
+
+        # Check if input is a URL or a username
+        if [[ "$INPUT" =~ ^https:\/\/github\.com\/([a-zA-Z0-9_-]+) ]]; then
+          # Extract username from URL
+          USERNAME="${BASH_REMATCH[1]}"
+        elif [[ "$INPUT" =~ ^[a-zA-Z0-9_-]+$ ]]; then
+          # If the input is just a username
+          USERNAME="$INPUT"
+        else
+          echo "Invalid input. Please provide a valid GitHub username or a GitHub profile URL."
           exit 1
         fi
 
-    - name: Set up Git Config
-      run: |
-        # Set Git config using the provided username and a default email
-        git config --local user.name "${{ github.event.inputs.username }}"
-        git config --local user.email "${{ github.event.inputs.username }}@example.com"
+        # Store username as an environment variable for further steps
+        echo "USERNAME=$USERNAME" >> $GITHUB_ENV
 
     - name: Fetch User Info from GitHub API
       id: fetch_user_info
       run: |
-        # Use GitHub API to fetch public user data
-        USERNAME="${{ github.event.inputs.username }}"
+        # Use GitHub API to fetch user data
+        USERNAME="${{ env.USERNAME }}"
         
-        # Fetch user data in a safe way, handle possible errors
+        # Fetch user data from GitHub API
         USER_DATA=$(curl -s "https://api.github.com/users/${USERNAME}")
+        
+        # Check if the user exists
         if [ $(echo "$USER_DATA" | jq -r '.message') == "Not Found" ]; then
-          echo "User not found on GitHub. Please check the username."
+          echo "User not found on GitHub. Please check the username or URL."
           exit 1
         fi
 
-        # Extract relevant information from the response
+        # Extract user details (name, bio, email, public_repos)
+        NAME=$(echo "$USER_DATA" | jq -r '.name')
         BIO=$(echo "$USER_DATA" | jq -r '.bio')
         EMAIL=$(echo "$USER_DATA" | jq -r '.email')
         PUBLIC_REPOS=$(echo "$USER_DATA" | jq -r '.public_repos')
 
-        # Set the extracted data as environment variables
+        # Set the extracted data as environment variables for use in other steps
+        echo "name=$NAME" >> $GITHUB_ENV
         echo "bio=$BIO" >> $GITHUB_ENV
         echo "email=$EMAIL" >> $GITHUB_ENV
         echo "public_repos=$PUBLIC_REPOS" >> $GITHUB_ENV
 
     - name: Create User Folder Structure
       run: |
-        # Create folder structure to store user profile information
-        mkdir -p "Contributors/${{ github.event.inputs.username }}/Profile"
+        # Create folder structure for the user
+        mkdir -p "Contributors/${{ env.USERNAME }}/Profile"
 
-        # Create README.md with user information
-        echo "# Profile for ${{ github.event.inputs.username }}" > "Contributors/${{ github.event.inputs.username }}/Profile/README.md"
-        echo "## Bio: ${{ env.bio }}" >> "Contributors/${{ github.event.inputs.username }}/Profile/README.md"
-        echo "## Email: ${{ env.email }}" >> "Contributors/${{ github.event.inputs.username }}/Profile/README.md"
-        echo "## Public Repositories: ${{ env.public_repos }}" >> "Contributors/${{ github.event.inputs.username }}/Profile/README.md"
+        # Create README.md with user profile information
+        echo "# Profile for ${{ env.USERNAME }}" > "Contributors/${{ env.USERNAME }}/Profile/README.md"
+        echo "## Name: ${{ env.name }}" >> "Contributors/${{ env.USERNAME }}/Profile/README.md"
+        echo "## Bio: ${{ env.bio }}" >> "Contributors/${{ env.USERNAME }}/Profile/README.md"
+        echo "## Email: ${{ env.email }}" >> "Contributors/${{ env.USERNAME }}/Profile/README.md"
+        echo "## Public Repositories: ${{ env.public_repos }}" >> "Contributors/${{ env.USERNAME }}/Profile/README.md"
 
-        # Create index.html with user details (for easier access on web)
-        echo "<html>" > "Contributors/${{ github.event.inputs.username }}/Profile/index.html"
-        echo "<head><title>${{ github.event.inputs.username }} Profile</title></head>" >> "Contributors/${{ github.event.inputs.username }}/Profile/index.html"
-        echo "<body><h1>${{ github.event.inputs.username }}'s Profile</h1>" >> "Contributors/${{ github.event.inputs.username }}/Profile/index.html"
-        echo "<p><strong>Bio:</strong> ${{ env.bio }}</p>" >> "Contributors/${{ github.event.inputs.username }}/Profile/index.html"
-        echo "<p><strong>Email:</strong> ${{ env.email }}</p>" >> "Contributors/${{ github.event.inputs.username }}/Profile/index.html"
-        echo "<p><strong>Public Repositories:</strong> ${{ env.public_repos }}</p>" >> "Contributors/${{ github.event.inputs.username }}/Profile/index.html"
-        echo "</body></html>" >> "Contributors/${{ github.event.inputs.username }}/Profile/index.html"
+        # Create index.html with user profile information
+        echo "<html>" > "Contributors/${{ env.USERNAME }}/Profile/index.html"
+        echo "<head><title>${{ env.USERNAME }} Profile</title></head>" >> "Contributors/${{ env.USERNAME }}/Profile/index.html"
+        echo "<body><h1>${{ env.USERNAME }}'s Profile</h1>" >> "Contributors/${{ env.USERNAME }}/Profile/index.html"
+        echo "<p><strong>Name:</strong> ${{ env.name }}</p>" >> "Contributors/${{ env.USERNAME }}/Profile/index.html"
+        echo "<p><strong>Bio:</strong> ${{ env.bio }}</p>" >> "Contributors/${{ env.USERNAME }}/Profile/index.html"
+        echo "<p><strong>Email:</strong> ${{ env.email }}</p>" >> "Contributors/${{ env.USERNAME }}/Profile/index.html"
+        echo "<p><strong>Public Repositories:</strong> ${{ env.public_repos }}</p>" >> "Contributors/${{ env.USERNAME }}/Profile/index.html"
+        echo "</body></html>" >> "Contributors/${{ env.USERNAME }}/Profile/index.html"
 
-    - name: Commit Changes
+    - name: Commit and Push Changes
       run: |
-        # Add and commit the changes made
+        # Add, commit, and push the changes to the repository
         git add .
-        git commit -m "Add user profile for ${{ github.event.inputs.username }} with bio, email, and public repos"
+        git commit -m "Add profile for ${{ env.USERNAME }} with name, bio, email, and public repos"
         git push
