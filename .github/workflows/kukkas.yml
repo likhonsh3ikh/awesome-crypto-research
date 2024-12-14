@@ -1,4 +1,4 @@
-name: Deploy Bitcoin Payment Processor to GitHub Pages
+name: Generate Static Content for Kukks Bitcoin Payment Processor
 
 on:
   # Runs on pushes targeting the default branch
@@ -10,28 +10,18 @@ on:
 
 permissions:
   contents: read
-  pages: write
   id-token: write
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
-
 jobs:
-  # Single deploy job since we're just deploying
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  # Single job for creating static content and pushing changes
+  generate:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up the directory and add necessary files
+      - name: Create directory and files for Bitcoin Payment Processor
         run: |
           # Create directory for Bitcoin Payment Processor
           mkdir -p kukks-payment-processor
@@ -91,15 +81,3 @@ jobs:
           git add .
           git commit -m "Add Bitcoin payment processor files for Kukks"
           git push origin main
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: 'kukks-payment-processor'
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
