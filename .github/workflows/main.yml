@@ -1,0 +1,66 @@
+name: Automated Task with Top Developer
+
+on:
+  workflow_dispatch:
+    inputs:
+      username:
+        description: 'Choose a top developer'
+        required: true
+        default: 'default_user'
+
+jobs:
+  fetch-top-developers:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch Top Developers from GitHub
+        run: |
+          # Fetching top 10 trending developers (e.g., based on followers)
+          curl -s "https://api.github.com/search/users?q=followers:>1000&sort=followers&order=desc" -o top_developers.json
+          
+          # Extract the top 10 users and save them into a file
+          jq '.items[0:10] | .[].login' top_developers.json > top_users.txt
+          jq '.items[0:10] | .[].email' top_developers.json > top_users_emails.txt
+          
+          # Show top 10 users
+          cat top_users.txt
+
+      - name: Validate and Select Chosen User
+        run: |
+          # Get the selected username from input
+          SELECTED_USER="${{ github.event.inputs.username }}"
+          
+          # Check if the chosen user is in the top users list
+          if grep -q "$SELECTED_USER" top_users.txt; then
+            echo "Valid user selected: $SELECTED_USER"
+          else
+            echo "Invalid user selected. Exiting."
+            exit 1
+          fi
+
+          # Get the email of the selected user
+          SELECTED_EMAIL=$(grep "$SELECTED_USER" -A 1 top_users_emails.txt | tail -n 1)
+          echo "Selected user's email: $SELECTED_EMAIL"
+
+  perform-task:
+    runs-on: ubuntu-latest
+    needs: fetch-top-developers
+    steps:
+      - name: Set up Git with Selected Developer Credentials
+        run: |
+          git config user.name "$SELECTED_USER"
+          git config user.email "$SELECTED_EMAIL"
+
+      - name: Clone Repository for Task
+        run: |
+          git clone https://github.com/$SELECTED_USER/your-repository.git
+          cd your-repository
+
+      - name: Perform Task and Commit Changes
+        run: |
+          # Create or modify a file based on the task
+          echo "Automated task executed by $SELECTED_USER" > task_output.txt
+          
+          # Add, commit, and push changes with the selected user's details
+          git add task_output.txt
+          git commit -m "Automated task by $SELECTED_USER"
+          git push origin main
